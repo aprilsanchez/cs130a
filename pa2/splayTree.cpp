@@ -254,7 +254,10 @@ std::pair<Node*, Node*> splayTree::split(int i, Node* t) {
 
 //FIND function
 void splayTree::find(int i) {
- 
+    if (!root) {
+        std::cout << "item " << i << " not found" << std::endl;
+        return;
+    }
     if (access(i)) {
         std::cout << "item " << i << " found" << std::endl;
     }
@@ -300,6 +303,10 @@ void splayTree::insert(int i) {
 }
 
 void splayTree::remove(int i) {
+    if (!root) {
+        std::cout << "item " << i << " not deleted; not present" << std::endl;
+        return;
+    }
     access(i);
 
     if (root->data != i) {
@@ -310,6 +317,14 @@ void splayTree::remove(int i) {
     //
     Node* left = root->left;
     Node* right = root->right;
+
+    if (!left && !right) {
+        delete root;
+        root = NULL;
+        std::cout << "item " << i << " deleted" << std::endl;
+        return;
+    }
+
     if (left) {
         left->parent = NULL;
     }
