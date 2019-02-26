@@ -27,8 +27,6 @@ class splayTree {
         //Node* root; 
     private:
         Node* root;
-        void rotateRight(Node* n);
-        void rotateLeft(Node* n);
         void splay(Node* n);
         Node* access(int i);
         Node* join(Node* t1, Node* t2);
@@ -36,6 +34,7 @@ class splayTree {
         void clear(Node* n);    //helper function for destructor
         Node* access(int i, Node* n);    //helper function for access
         void print(Node* r);    //helper function for print
+        void singleRotation(Node* n);   //helper function for splay
 };
 
 #endif          

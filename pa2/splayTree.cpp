@@ -19,112 +19,71 @@ void splayTree::clear(Node* n) {
     return;
 }
 
-//Helper function for splay
-void splayTree::rotateRight(Node* P) {
-    Node* n = P->left;
-    Node* r = n->right;
-    Node* p = P->parent;
-
-    //assign new parent of n, if it's not NULL
-    if (p) {
-        if ( P == p->right) {
-            p->right = n;
-        }
-        else {
-            p->left = n;
-        }
-    }
-
-    //if right child of n exists
-    if (r) {
-        r->parent = P;
-    }
-
-    n->parent = p;
-    n->right = P;
-
-    P->parent = n;
-    P->left = r;
-
-    if (P == root) {
+//Helper function for splay; does a single notation from n to parent of n
+void splayTree::singleRotation(Node* n) {
+    Node* temp = n->parent;
+    
+    if (root == n->parent) {
         root = n;
     }
+        
+    //if n is a left child
+    if (n == temp->left) {
+        temp->left = n->right;
+        if (n->right) {
+            n->right->parent = temp;
+        }
+        n->right = temp;
+    }
+    else {  // n is a right child
+        temp->right = n->left;
+        if (n->left) {
+            n->left->parent = temp;
+        }
+        n->left = temp;
+    }
+    
+    //assign n its new parent
+    n->parent = temp->parent;
+    //if new parent is not NULL, fix its child pointer
+    if (n->parent) {
+        if (temp == temp->parent->left) {
+            temp->parent->left = n;
+        }
+        else {
+            temp->parent->right = n;
+        }
+    }
+    temp->parent = n;
 
     return;
 }
-
-//Helper function for splay
-void splayTree::rotateLeft(Node* P) {
-    Node* n = P->right;
-    Node* l = n->left;
-    Node* p = P->parent;
-
-    //assign new parent of n, it's not NULL
-    if (p) {
-        if (P == p->left) {
-            p->left = n;
-        }
-        else {
-            p->right = n;
-        }
-    }
-
-    //if left child of n exists
-    if (l) {
-        l->parent = P;
-    }
-    n->parent = p;
-    n->left = P;
-    P->parent = n;
-    P->right = l;
-
-    if ( P == root) {
-        root = n;
-    }
-
-    return;
-}
-
 
 //SPLAY function
 void splayTree::splay(Node* n) {
-    //Case 0: n is the root
+    //Case0: n is the root
     if (n == root) {
         return;
     }
 
     //Case 1: parent(n) is the root; single rotation
     else if (n->parent == root) {
-        //if n is a left child
-        if (n == n->parent->left) {
-            rotateRight(n->parent);
-        }
-        else {
-            rotateLeft(n->parent);
-        }
+        singleRotation(n);
         return;
     } 
 
- //Case 2: parent(n) is not the root
-    else if ( (n == n->parent->left && n->parent == n->parent->parent->left    ) ) {
-        rotateRight(n->parent->parent);
-        rotateRight(n->parent);
-        return splay(n);
-    }
-    else if ((n == n->parent->right && n->parent == n->parent->parent->right) ) {
-        rotateLeft(n->parent->parent);
-        rotateLeft(n->parent);
-        return splay(n);
+    //Case 2: parent(n) is not the root
+    else if ( (n == n->parent->left && n->parent == n->parent->parent->left) || (n == n->parent->right && n->parent == n->parent->parent->right) ) {
+        singleRotation(n->parent);
+        singleRotation(n);
+        splay(n);
     }
 
-    else if ( n == n->parent->left && n->parent == n->parent->parent->right) {
-        rotateRight(n->parent);
-        rotateLeft(n->parent->parent);
-    }
-
+    //Case 3:
     else {
-        rotateLeft(n->parent);
-        rotateRight(n->parent->parent);
+        singleRotation(n);
+        singleRotation(n);
+        splay(n);
     }
     
     return;
@@ -140,7 +99,6 @@ Node* splayTree::access(int i, Node* n) {
     //if i is at current node
     
     if(n->data == i) {
-       // std::cout << "found " << i << ", calling splay(" << i << ")" << std::endl;
         splay(n);
         return n;
     }
@@ -189,29 +147,7 @@ Node* splayTree::join(Node* t1, Node* t2) {
         max = max->right;
     }
 
-    //now that we have have, make it the root of t1
-    //assign left child of max as left child of max's parent
-    
-    //edge case
-    if (max == t1) {
-        max->right = t2;
-        max->right->parent = max;
-        t2 = NULL;
-        return max;
-    
-    }
-    //else
-    max->parent->right = max->left;
-    if (max->left) {
-        max->left->parent = max->parent; 
-    }
-
-    max->parent = NULL;
-
-    max->left = t1;
-    t1->parent = max;
-    t1 = NULL;
-
+    splay(max);
     //max does not have right child; make t2 its right child to join the trees
     max->right = t2;
     t2->parent = max;
@@ -335,6 +271,7 @@ void splayTree::remove(int i) {
     root->right = NULL;
     delete root;
 
+    root = left;
     root = join(left, right);
 
     std::cout << "item " << i << " deleted" << std::endl;
