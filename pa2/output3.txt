@@ -1,0 +1,14 @@
+item 1 inserted
+item 100 inserted
+item 2 inserted
+item 99 inserted
+item 51 inserted
+item 50 inserted
+item 101 inserted
+item 1 found
+1
+100
+2 101
+50
+99
+51

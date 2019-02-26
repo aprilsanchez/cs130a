@@ -1,0 +1,24 @@
+item 3 not found
+item 3 not deleted; not present
+item 3 inserted
+item 3 found
+item 3 deleted
+item 3 inserted
+item 4 inserted
+item 5 inserted
+item 6 inserted
+item 7 inserted
+item 8 inserted
+item 9 inserted
+item 10 inserted
+item 1 inserted
+item 8 deleted
+item 10 deleted
+item 8 not found
+item 10 not found
+item 1 found
+item 3 found
+3
+1 6
+4 7
+5 9

@@ -1,0 +1,10 @@
+9
+insert 1
+insert 100
+insert 2
+insert 99
+insert 51
+insert 50
+insert 101
+find 1
+print
